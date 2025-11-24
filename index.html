@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Typing Test</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #fff;
+    overflow: hidden;
+}
+
+#wrapper {
+    margin: 0 auto;
+    width: 1200px;
+}
+
+#timer {
+    text-align: center;
+    padding: 10px;
+    font-family: helvetica;
+    font-size: 25px;
+    background: #2ECC71;
+    opacity: 0.8;
+    display: none;
+    color: #fff;
+    letter-spacing: 2.5px;
+    font-weight: 100;
+}
+
+#paraContainer {
+    display: none;
+    width: 550px;
+    height: 600px;
+    margin: 25px 10px;
+    font-family: helvetica;
+    font-size: 18px;
+    line-height: 1.5;
+    border: 2px solid #2ECC71;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+#textArea {
+    display: none;
+    margin: 25px 10px;
+    width: 550px;
+    height: 600px;
+    resize:none;
+    font-family: helvetica;
+    font-size: 18px;
+    line-height: 1.5;
+    padding: 10px;
+    outline: none;
+    border: 2px solid #2ECC71;
+    border-radius: 5px;
+}
+
+#startWindow, #newTestWindow {
+    background: rgba(0,0,0,0.7);
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    font-family: helvetica;
+    padding-top: 100px;
+}
+
+#newTestWindow {
+    display: none;
+}
+
+.modalBox {
+    margin: 0 auto;
+    width: 500px;
+    background: #fff;
+    text-align: center;
+    border: 2px solid #C0392B;
+    border-radius: 10px;
+    padding: 20px;
+    line-height: 1.5;
+}
+
+.modalBox h1 {
+    font-size: 35px;
+    font-weight: 100;
+}
+
+.modalBox p {
+    font-size: 18px;
+    font-weight: 100;
+    padding: 20px 0;
+}
+
+.modalBox button {
+    outline: none;
+    padding: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+    background: #22A7F0;
+    border: 2px solid transparent;
+    color: #fff;
+    font-weight: 100;
+    transition: 0.2s;
+}
+
+.modalBox button:hover {
+    background: #fff;
+    border: 2px solid #22A7F0;
+    color: #22A7F0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="startWindow">
+    <div class="modalBox">
+        <h1>Typing Test</h1>
+        <p>Timer starts after you type. Try to type as fast as you can!</p>
+        <button id="startButton">Start Test</button>
+    </div>
+</div>
+
+<div id="timer"></div>
+
+<div id="wrapper">
+
+    <div id="paraContainer">
+        <p id="testPara"></p>
+    </div>
+
+    <textarea id="textArea" placeholder="Start typing here..."></textarea>
+
+</div>
+
+<div id="newTestWindow">
+    <div class="modalBox">
+        <h1>Time's Up!</h1>
+        <p id="finalScore"></p>
+        <button id="newTestButton">Try Again</button>
+    </div>
+</div>
+
+<script>
+
+
+var timer = document.getElementById("timer");
+var timeRemaining = 60;
+
+var testPara = document.getElementById("testPara");
+var textArea = document.getElementById("textArea");
+var paraContainer = document.getElementById("paraContainer");
+
+var startWindow = document.getElementById("startWindow");
+var startButton = document.getElementById("startButton");
+
+var newTestWindow = document.getElementById("newTestWindow");
+var newTestButton = document.getElementById("newTestButton");
+
+var calculateScore = function () {
+    var enteredText = textArea.value.trim();
+    var words = enteredText.split(/\s+/);
+    return words.filter(w => w !== "").length;
+};
+
+var generatePassage = function () {
+    paraContainer.style.display = "inline-block";
+    textArea.style.display = "inline-block";
+
+    var passages = [passage1, passage2, passage3, passage4, passage5];
+    var randomIndex = Math.floor(Math.random() * passages.length);
+
+    testPara.innerHTML = passages[randomIndex];
+};
+
+var displayTime = function () {
+
+    var getTime = setInterval(function () {
+
+        timeRemaining--;
+        timer.innerHTML = "Time Remaining: " + timeRemaining + "s";
+
+        if (timeRemaining === 0) {
+
+            clearInterval(getTime);
+
+            document.getElementById("wrapper").remove();
+            timer.remove();
+
+            document.getElementById("finalScore").innerHTML =
+                "Your speed: " + calculateScore() + " words per minute.";
+
+            newTestWindow.style.display = "block";
+        }
+    }, 1000);
+
+    textArea.removeEventListener("keydown", displayTime);
+};
+
+var test = function () {
+
+    startWindow.style.display = "none";
+
+    timer.innerHTML = "Time Remaining: 60s";
+    timer.style.display = "block";
+
+    textArea.addEventListener("keydown", displayTime);
+
+    generatePassage();
+};
+
+startButton.addEventListener("click", test);
+
+
+newTestButton.addEventListener("click", function () {
+    window.location.reload();
+});
+
+var passage1 = "Our environment provides us with air to breathe, water to drink, and food to eat. But pollution and waste are damaging nature. To protect our planet, we must plant more trees, reduce plastic use, and save water. Small steps taken by each person can bring a big change. A clean and green environment is necessary for a healthy future.";
+var passage2 = "Teamwork means working together to achieve a common goal. When people share ideas and support one another, the result is always better. Good communication helps a team understand each other clearly. Teamwork also teaches us patience, leadership, and cooperation. Whether in school, office, or sports, success becomes easier when everyone works as a team.";
+var passage3 = "A healthy lifestyle is important for a happy life. Eating nutritious food, drinking enough water, and doing regular exercise keep our body strong. Good sleep helps us feel fresh and focused during the day. We must also manage stress by doing activities we enjoy. A healthy mind and healthy body together lead to a peaceful and successful life.";
+var passage4 = "Reading is one of the best habits a person can develop. It increases knowledge, improves vocabulary, and helps us think creatively. Books allow us to explore different worlds and understand new ideas. Spending just a few minutes reading every day can make a big difference in our communication skills and confidence. Reading is truly a gateway to learning.";
+var passage5 = "Technology has become an important part of our everyday life. We use smartphones to communicate, computers to study, and the internet to learn new skills. Modern tools save our time and help us finish work faster. As technology grows, it is improving education, healthcare, and entertainment. Learning how to use digital tools is now an essential skill for everyone..";
+
+</script>
+
+</body>
+</html>
